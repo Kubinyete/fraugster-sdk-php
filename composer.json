@@ -1,0 +1,22 @@
+{
+    "name": "kubinyete/fraugster-sdk-php",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kubinyete\\Fraugster\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Vitor Kubinyete",
+            "email": "vitor@ipag.com.br"
+        }
+    ]
+}
