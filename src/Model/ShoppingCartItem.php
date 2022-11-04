@@ -35,7 +35,7 @@ class ShoppingCartItem implements JsonSerializable
         DomainException::assert(is_null($this->uniqueId) || strlen($this->uniqueId), "Item unique id is required");
         DomainException::assert(is_null($this->additionalDescription) || strlen($this->additionalDescription), "Item additional description is required");
         DomainException::assert(is_null($this->discount) || $this->discount >= 0, "Item discount should be greater or equal to zero");
-        DomainException::assert(is_null($this->taxRate) || $this->taxRate >= 0 && $this->taxRate <= 100.00, "Item discount should be a percentage (0-100)");
+        DomainException::assert(is_null($this->taxRate) || $this->taxRate >= 0 && $this->taxRate <= 100.00, "Item discount should be percentage (0-100)");
     }
 
     //

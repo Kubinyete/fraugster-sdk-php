@@ -43,22 +43,22 @@ class Billing implements JsonSerializable
     {
         return [
             'bill_ad_city' => $this->addressCity,
-            'bill_ad_city_norm_dp' => StringUtil::normalizeLower($this->addressCity),
+            // 'bill_ad_city_norm_dp' => StringUtil::normalizeLower($this->addressCity),
             'bill_ad_ctry' => (string)$this->addressCountry,
-            'bill_ad_ctry_norm_dp' => StringUtil::normalizeUpper((string)$this->addressCountry),
+            // 'bill_ad_ctry_norm_dp' => StringUtil::normalizeUpper((string)$this->addressCountry),
             'bill_ad_line1' => $this->addressLine1,
-            'bill_ad_line1_norm_dp' => StringUtil::normalizeLower($this->addressLine1),
+            // 'bill_ad_line1_norm_dp' => StringUtil::normalizeLower($this->addressLine1),
             'bill_ad_line2' => $this->addressLine2 ?? '',
-            'bill_ad_line2_norm_dp' => StringUtil::normalizeLower($this->addressLine2 ?? ''),
+            // 'bill_ad_line2_norm_dp' => StringUtil::normalizeLower($this->addressLine2 ?? ''),
             'bill_ad_line3' => $this->addressLine3 ?? '',
-            'bill_ad_line3_norm_dp' => StringUtil::normalizeLower($this->addressLine3 ?? ''),
+            // 'bill_ad_line3_norm_dp' => StringUtil::normalizeLower($this->addressLine3 ?? ''),
             'bill_ad_state' => (string)$this->addressState,
-            'bill_ad_state_norm_dp' => StringUtil::normalizeUpper((string)$this->addressState),
+            // 'bill_ad_state_norm_dp' => StringUtil::normalizeUpper((string)$this->addressState),
             'bill_ad_zip' => $this->addressZip,
-            'bill_ad_zip_norm_dp' => StringUtil::normalizeLower($this->addressZip),
+            // 'bill_ad_zip_norm_dp' => StringUtil::normalizeLower($this->addressZip),
 
             'bill_ad_house_num' => $this->houseNumber,
-            'bill_ad_house_num_norm_dp' => StringUtil::normalizeUpper($this->houseNumber),
+            // 'bill_ad_house_num_norm_dp' => StringUtil::normalizeUpper($this->houseNumber),
             'bill_ad_name' => $this->addressName,
         ];
     }

@@ -2,11 +2,16 @@
 
 namespace Kubinyete\Fraugster\Core;
 
+use DateTimeInterface;
 use Kubinyete\Fraugster\Exception\ExpiredTokenException;
 use Kubinyete\Fraugster\Exception\InvalidTokenException;
 use Kubinyete\Fraugster\Exception\ServerException;
 use Kubinyete\Fraugster\Http\Request;
 use Kubinyete\Fraugster\Http\Response;
+use Kubinyete\Fraugster\Model\Recommendation\Recommendation;
+use Kubinyete\Fraugster\Model\Transaction\UpdatePacket;
+use Kubinyete\Fraugster\Model\Transaction;
+use Kubinyete\Fraugster\Model\TransactionStatus;
 use Kubinyete\Fraugster\Util\ArrayUtil;
 
 class FraugsterClient
@@ -59,15 +64,15 @@ class FraugsterClient
 
     protected function assertTokenIsUsable(string $token): void
     {
-        $firstSlice = explode('.', $token, 2)[0];
-        $firstSlice = base64_decode($firstSlice);
-        $firstSlice = json_decode($firstSlice, true);
+        $payload = explode('.', $token, 3)[1] ?? null;
+        $payload = base64_decode($payload);
+        $payload = json_decode($payload, true);
 
-        if (!is_array($firstSlice)) {
+        if (!is_array($payload)) {
             throw new InvalidTokenException();
         }
 
-        if (ArrayUtil::get('exp', $firstSlice, 0) < time()) {
+        if (ArrayUtil::get('exp', $payload, 0) < time()) {
             throw new ExpiredTokenException();
         }
     }
@@ -120,5 +125,45 @@ class FraugsterClient
         return $this->createSession($username, $password)->get('sessionToken');
     }
 
-    // public function createTransaction() 
+    /**
+     * Creates a Fraugster transaction
+     *
+     * @param Transaction $transaction
+     * @return Recommendation|null
+     */
+    public function createTransaction(Transaction $transaction): ?Recommendation
+    {
+        $response = $this->request('transaction')->body($transaction->jsonSerialize())->post();
+        return Recommendation::tryParse($response->jsonSerialize());
+    }
+
+    /**
+     * Update an existing Fraugster transaction
+     *
+     * @param string $id
+     * @param UpdatePacket $update
+     * @return Response
+     */
+    public function updateTransaction(UpdatePacket $update): Response
+    {
+        return $this->request('transaction')->body($update->jsonSerialize())->patch();
+    }
+
+    /**
+     * Update a batch of transactions
+     *
+     * @param string $id
+     * @param UpdatePacket $update
+     * @return Response
+     */
+    public function updateTransactionBatch(UpdatePacket ...$packets): Response
+    {
+        $packets = array_map(fn (UpdatePacket $x) => $x->jsonSerialize(), $packets);
+        $packets = array_merge(...$packets);
+
+        /**
+         * @var array $packets 
+         */
+        return $this->request('transaction')->body($packets)->patch();
+    }
 }

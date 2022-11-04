@@ -3,12 +3,14 @@
 namespace Kubinyete\Fraugster\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use JsonSerializable;
 use Kubinyete\Fraugster\Exception\BadRequestException;
 use Kubinyete\Fraugster\Exception\ParseException;
 use Kubinyete\Fraugster\Exception\RateLimitedException;
+use Kubinyete\Fraugster\Exception\ServerException as ExceptionServerException;
 use Kubinyete\Fraugster\Exception\UnauthorizedException;
 use Kubinyete\Fraugster\Util\ArrayUtil;
 use RuntimeException;
@@ -18,12 +20,6 @@ class Request implements JsonSerializable
 {
     private const USER_AGENT = 'FraugsterSDK for PHP';
     private const CONTENT_TYPE = 'application/json';
-
-    private const STATUS_CODE_EXCEPTION_MAP = [
-        400 => BadRequestException::class,
-        401 => UnauthorizedException::class,
-        429 => RateLimitedException::class,
-    ];
 
     private static ?Client $client = null;
 
@@ -59,12 +55,20 @@ class Request implements JsonSerializable
 
     //
 
-    private function tryTranslateCodeToException(int $code): void
+    private function tryTranslateCodeToException(int $code, ?string $response): void
     {
-        $className = self::STATUS_CODE_EXCEPTION_MAP[$code] ?? null;
+        try {
+            $response = (new Response($response))->get('error_msg');
+        } catch (ParseException $e) {
+        }
 
-        if ($className) {
-            throw new $className;
+        switch ($code) {
+            case 400:
+                throw new BadRequestException($response);
+            case 401:
+                throw new UnauthorizedException($response);
+            case 429:
+                throw new RateLimitedException($response);
         }
     }
 
@@ -78,17 +82,17 @@ class Request implements JsonSerializable
                 'json' => $this->body,
                 'query' => $this->query,
             ]);
-        } catch (ServerException $e) {
+        } catch (ClientException $e) {
             $response = $e->getResponse();
 
             $code = $response->getStatusCode();
             $reason = $response->getReasonPhrase();
 
-            $this->tryTranslateCodeToException($code);
+            $this->tryTranslateCodeToException($code, $response->getBody()?->getContents());
 
-            throw new RuntimeException("Request failed with status code $code '$reason'.");
+            throw new RuntimeException("Request to $this->url failed with status code $code '$reason'.");
         } catch (GuzzleException $e) {
-            throw new RuntimeException("An error ocurred while trying to send a request.");
+            throw new RuntimeException("An error ocurred while trying to send a request to $this->url.");
         }
 
         $content = $response->getBody()->getContents();

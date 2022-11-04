@@ -15,8 +15,8 @@ class Card implements JsonSerializable
         protected string $holder,
         protected string $lastFourDigits,
         protected string $expiryDate,
-        protected ?string $num,
-        protected ?string $numHash,
+        protected ?string $num = null,
+        protected ?string $numHash = null,
         protected ?string $numType = 'PAN',
     ) {
         $this->assertValid();

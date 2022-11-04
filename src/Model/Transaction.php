@@ -19,13 +19,20 @@ class Transaction implements JsonSerializable
         protected string $sellerId,
         protected bool $firstPurchase,
         protected IpAddress $ip,
+        protected PaymentMethod $paymentMethod,
+        protected PaymentMethodBrand $paymentMethodBrand,
+        protected ?string $status,
         protected ?string $orderId,
         protected ?Account $account = null,
         protected ?Billing $billing = null,
+        protected ?Shipping $shipping = null,
         protected ?Card $card = null,
         protected ?Customer $customer = null,
         protected ?DeviceInfo $deviceInfo = null,
         protected ?ShoppingCart $shoppingCart = null,
+        protected ?FixedLinePhone $phone = null,
+        protected ?MobilePhone $mobilePhone = null,
+        protected ?Seller $seller = null,
     ) {
         $this->assertValidTransaction();
     }
@@ -52,21 +59,26 @@ class Transaction implements JsonSerializable
         $packet = [
             'trans_id' => $this->id,
             'trans_ts' => $this->ts->format(DateTime::RFC3339),
-            'trans_amt' => (string)$this->amt,
+            'trans_amt' => $this->amt,
             'trans_currency' => (string)$this->currency,
             'seller_id' => $this->sellerId,
+            'pmt_method' => $this->paymentMethod->value,
+            'pmt_method_brand' => $this->paymentMethodBrand->value,
+            'order_id' => $this->orderId,
+            'device_fingerprint' => $this->deviceInfo?->jsonSerialize(),
             'first_purchase' => $this->firstPurchase,
             'ip' => (string)$this->ip,
+            'phone' => $this->phone?->__toString(),
+            'phone_mobile' => $this->mobilePhone?->__toString(),
         ];
 
         $packet += $this->account?->jsonSerialize() ?? [];
         $packet += $this->billing?->jsonSerialize() ?? [];
+        $packet += $this->shipping?->jsonSerialize() ?? [];
         $packet += $this->card?->jsonSerialize() ?? [];
         $packet += $this->customer?->jsonSerialize() ?? [];
-
-        if ($this->deviceInfo) {
-            $packet['device_fingerprint'] = $this->deviceInfo->jsonSerialize();
-        }
+        $packet += $this->shoppingCart?->jsonSerialize() ?? [];
+        $packet += $this->seller?->jsonSerialize() ?? [];
 
         return $packet;
     }
