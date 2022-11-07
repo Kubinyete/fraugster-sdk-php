@@ -9,20 +9,20 @@ use Throwable;
 class DeviceInfo implements JsonSerializable
 {
     public function __construct(
-        protected ?string $user_agent,
-        protected ?bool $cookies_enabled,
-        protected ?bool $java_enabled,
-        protected ?string $language,
-        protected ?string $plugins,
-        protected ?string $timezone,
-        protected ?int $timezone_offset,
-        protected ?bool $do_not_track,
-        protected ?string $platform,
-        protected ?bool $geo_supported,
-        protected ?int $screen_width,
-        protected ?int $screen_height,
-        protected ?int $screen_depth,
-        protected ?int $logical_cores,
+        protected ?string $user_agent = null,
+        protected ?bool $cookies_enabled = null,
+        protected ?bool $java_enabled = null,
+        protected ?string $language = null,
+        protected ?array $plugins = null,
+        protected ?string $timezone = null,
+        protected ?int $timezone_offset = null,
+        protected ?bool $do_not_track = null,
+        protected ?string $platform = null,
+        protected ?bool $geo_supported = null,
+        protected ?int $screen_width = null,
+        protected ?int $screen_height = null,
+        protected ?int $screen_depth = null,
+        protected ?int $logical_cores = null,
     ) {
     }
 
