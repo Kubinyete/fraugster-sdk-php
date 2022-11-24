@@ -4,8 +4,6 @@
 
 <h2>The unofficial Fraugster SDK client for integrating PHP applications</h2>
 
----
-
 If you have any suggestions or changes please contribute to this project by sending a pull request, the official Fraugster documentation can be found [here](https://docs.fraugster.com/).
 
 ## Usage
