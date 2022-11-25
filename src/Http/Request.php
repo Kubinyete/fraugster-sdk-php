@@ -90,9 +90,9 @@ class Request implements JsonSerializable
 
             $this->tryTranslateCodeToException($code, $response->getBody()?->getContents());
 
-            throw new RuntimeException("Request to $this->url failed with status code $code '$reason'.");
+            throw new RuntimeException("Request to $this->url failed with status code $code '$reason'.", 0, $e);
         } catch (GuzzleException $e) {
-            throw new RuntimeException("An error ocurred while trying to send a request to $this->url.");
+            throw new RuntimeException("An error ocurred while trying to send a request to $this->url.", 0, $e);
         }
 
         $content = $response->getBody()->getContents();
