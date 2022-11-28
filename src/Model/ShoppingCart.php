@@ -30,7 +30,7 @@ class ShoppingCart implements JsonSerializable
     public function jsonSerialize(): mixed
     {
         return [
-            'items' => $this->items,
+            'items' => array_map(fn (ShoppingCartItem $x) => $x->jsonSerialize(), $this->items),
         ];
     }
 }
