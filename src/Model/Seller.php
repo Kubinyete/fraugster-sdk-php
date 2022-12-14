@@ -12,8 +12,8 @@ class Seller implements JsonSerializable
 {
     public function __construct(
         protected ?string $name,
-        protected Currency $currency,
-        protected Country $country,
+        protected ?Currency $currency = null,
+        protected ?Country $country = null,
         protected ?string $mcc = null,
 
     ) {
@@ -25,7 +25,7 @@ class Seller implements JsonSerializable
     protected function assertValid(): void
     {
         DomainException::assert(is_null($this->name) || strlen($this->name), "Seller name is required");
-        DomainException::assert(is_null($this->mcc) || strlen($this->mcc) && preg_match('/^[0-9]$+/', $this->mcc), "Seller industry mcc is required");
+        DomainException::assert(is_null($this->mcc) || strlen($this->mcc) && preg_match('/^[0-9]+/', $this->mcc), "Seller industry mcc is required");
     }
 
     //
